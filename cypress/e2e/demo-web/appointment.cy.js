@@ -1,7 +1,11 @@
-// web demo -> https://katalon-demo-cura.herokuapp.com/
 //declaration
-
 const web = "https://katalon-demo-cura.herokuapp.com/";
+const facility = "Tokyo CURA Healthcare Center";
+const program = "Medicaid";
+const visitDate = "27/09/2023";
+const comment = "testing";
+let readmission = false;
+let readmissionCbox;
 
 //function
 const doLogin = () => {
@@ -20,6 +24,14 @@ const doLogin = () => {
   });
 };
 
+const checkReadmission = () => {
+  if (readmission == true) {
+    readmissionCbox = "Yes";
+  } else {
+    readmissionCbox = "No";
+  }
+};
+
 //main function
 describe("Katalon Demo App", () => {
   beforeEach(() => {
@@ -28,19 +40,29 @@ describe("Katalon Demo App", () => {
   });
 
   it("Make appointment", () => {
-    cy.get("#combo_facility").select("Tokyo CURA Healthcare Center");
-    cy.get("#chk_hospotal_readmission").click();
-    cy.get("#txt_visit_date").type("27/09/2023").click();
-    cy.get("#radio_program_medicaid").check("Medicaid");
-    cy.get("#txt_comment").type("testing");
+    cy.get("#combo_facility").select(`${facility}`);
+    cy.get("#chk_hospotal_readmission").then(($a) => {
+      if (`${readmission}` == true) {
+        cy.get("#chk_hospotal_readmission").click();
+      } else {
+        cy.get("#chk_hospotal_readmission");
+      }
+    });
+    cy.get("#txt_visit_date").type(`${visitDate}`).click();
+    cy.get("#radio_program_medicaid").check(`${program}`);
+    cy.get("#txt_comment").type(`${comment}`);
     cy.contains("Book Appointment").click();
 
     //assert
     cy.contains("Appointment Confirmation").should("exist");
-    cy.get("#facility").should("include.text", "Tokyo CURA Healthcare Center");
-    cy.get("#hospital_readmission").should("include.text", "Yes");
-    cy.get("#program").should("include.text", "Medicaid");
-    cy.get("#visit_date").should("include.text", "27/09/2023");
-    cy.get("#comment").should("include.text", "testing");
+    cy.get("#facility").should("include.text", `${facility}`);
+    checkReadmission();
+    cy.get("#hospital_readmission").should(
+      "include.text",
+      `${readmissionCbox}`
+    );
+    cy.get("#program").should("include.text", `${program}`);
+    cy.get("#visit_date").should("include.text", `${visitDate}`);
+    cy.get("#comment").should("include.text", `${comment}`);
   });
 });
