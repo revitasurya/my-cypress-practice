@@ -39,7 +39,7 @@ describe("Katalon Demo App", () => {
     doLogin();
   });
 
-  it("Make appointment", (facility) => {
+  it("Make appointment", () => {
     cy.task('queryDb',"SELECT value from cypress_practice.configs WHERE id = 2")
     .then(result => {
       facility = result[0].value
@@ -67,7 +67,6 @@ describe("Katalon Demo App", () => {
 
     //assert
     cy.contains("Appointment Confirmation").should("exist");
-
     cy.get("#facility").then(() => {
       if (facility) {
         cy.get("#facility").should("include.text", `${facility}`);
