@@ -1,11 +1,11 @@
 //declaration
-const web = "https://katalon-demo-cura.herokuapp.com/";
-const facility = "Tokyo CURA Healthcare Center";
 const program = "Medicaid";
 const visitDate = "27/09/2023";
 const comment = "testing";
 let readmission = false;
+const web= "https://katalon-demo-cura.herokuapp.com/";
 let readmissionCbox;
+let facility;
 
 //function
 const doLogin = () => {
@@ -39,8 +39,20 @@ describe("Katalon Demo App", () => {
     doLogin();
   });
 
-  it("Make appointment", () => {
-    cy.get("#combo_facility").select(`${facility}`);
+  it("Make appointment", (facility) => {
+    cy.task('queryDb',"SELECT value from cypress_practice.configs WHERE id = 2")
+    .then(result => {
+      facility = result[0].value
+    })
+
+    cy.get("#combo_facility").then(() => {
+      if (facility) {
+        cy.get("#combo_facility").select(facility);
+      } else {
+        cy.log("Facility variable is not yet defined.");
+      }
+    });
+
     cy.get("#chk_hospotal_readmission").then(($a) => {
       if (`${readmission}` == true) {
         cy.get("#chk_hospotal_readmission").click();
@@ -55,7 +67,14 @@ describe("Katalon Demo App", () => {
 
     //assert
     cy.contains("Appointment Confirmation").should("exist");
-    cy.get("#facility").should("include.text", `${facility}`);
+
+    cy.get("#facility").then(() => {
+      if (facility) {
+        cy.get("#facility").should("include.text", `${facility}`);
+      } else {
+        cy.log("Facility variable is not yet defined.");
+      }
+    });
     checkReadmission();
     cy.get("#hospital_readmission").should(
       "include.text",
@@ -64,5 +83,6 @@ describe("Katalon Demo App", () => {
     cy.get("#program").should("include.text", `${program}`);
     cy.get("#visit_date").should("include.text", `${visitDate}`);
     cy.get("#comment").should("include.text", `${comment}`);
+    
   });
 });

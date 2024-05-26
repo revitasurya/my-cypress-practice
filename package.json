@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "env": {
+    "db": {
+      "host": "127.0.0.1:8889",
+      "user": "root",
+      "password": "root",
+      "database": "cypress_practice"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,6 +18,7 @@
   "license": "ISC",
   "devDependencies": {
     "cypress": "^13.0.0",
+    "mysql": "^2.18.1",
     "prettier": "2.7.1"
   }
 }
