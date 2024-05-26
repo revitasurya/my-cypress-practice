@@ -67,7 +67,6 @@ describe("Katalon Demo App", () => {
 
     //assert
     cy.contains("Appointment Confirmation").should("exist");
-
     cy.get("#facility").then(() => {
       if (facility) {
         cy.get("#facility").should("include.text", `${facility}`);
